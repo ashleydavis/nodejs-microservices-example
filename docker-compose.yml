@@ -1,0 +1,43 @@
+version: '3'
+services:
+
+  db:
+    image: mongo
+    container_name: db
+    ports:
+     - "27017:27017"
+    restart: always
+
+  service:
+    build: 
+      context: ./service
+      dockerfile: Dockerfile.dev
+    container_name: service
+    volumes:
+     - ./tmp/npm:/root/.npm:z
+    ports:
+     - "8080:80"
+    environment:
+     - PORT=80
+     - DBHOST=mongodb://db:27017
+     - NODE_ENV=development
+    depends_on:
+     - db
+    restart: always
+
+  web:
+    build: 
+      context: ./web
+      dockerfile: Dockerfile.dev
+    container_name: web
+    volumes:
+     - ./tmp/npm:/root/.npm:z
+    ports:
+     - "80:80"
+    environment:
+     - PORT=80
+     - NODE_ENV=development
+    depends_on:
+     - service
+    restart: always
+

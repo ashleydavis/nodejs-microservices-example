@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-microservices-example",
+  "version": "1.0.0",
+  "description": "An example of Nodejs microservices",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashleydavis/nodejs-microservices-example`.git"
+  },
+  "author": "ashley@codecapers.com.au",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashleydavis/nodejs-microservices-example`/issues"
+  },
+  "homepage": "https://github.com/ashleydavis/nodejs-microservices-example`#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.4"
+  }
+}
