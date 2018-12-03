@@ -26,6 +26,10 @@ In the VM, run:
 
     sudo docker-compose up
 
+To build after you change code:
+
+    sudo docker-compose up --build
+
 Web page now available:
 
     http://127.0.0.1:7000/
@@ -45,7 +49,11 @@ Check vagrant-provision-vm.sh for example installation commands.
 
 Run:
 
-    sudo docker-compose up
+    docker-compose up
+
+To build after you change code:
+
+    docker-compose up --build
 
 Web page now available:
 

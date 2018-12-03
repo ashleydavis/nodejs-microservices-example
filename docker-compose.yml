@@ -8,6 +8,14 @@ services:
      - "27017:27017"
     restart: always
 
+  db-fixture:
+    build: 
+      context: ./db-fixture
+      dockerfile: Dockerfile.dev
+    container_name: db-fixture
+    depends_on:
+      - db
+    
   service:
     build: 
       context: ./service
