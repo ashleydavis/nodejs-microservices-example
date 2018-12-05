@@ -28,7 +28,7 @@ function startServer() {
 async function main() {
 
     app.get("/", (req, res) => {
-        res.send('Hello world\n');
+        res.send('Hello computer!\n');
     });
 
     app.get("/data", (req, res) => {

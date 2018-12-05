@@ -9,6 +9,7 @@ services:
     restart: always
 
   db-fixture:
+    image: db-fixture
     build: 
       context: ./db-fixture
       dockerfile: Dockerfile.dev
@@ -17,12 +18,14 @@ services:
       - db
     
   service:
+    image: nodejsmicroexample.azurecr.io/service
     build: 
       context: ./service
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile-dev
     container_name: service
     volumes:
      - ./tmp/npm:/root/.npm:z
+     - ./service/src:/usr/src/app/src:z
     ports:
      - "8080:80"
     environment:
@@ -34,12 +37,14 @@ services:
     restart: always
 
   web:
+    image: nodejsmicroexample.azurecr.io/web
     build: 
       context: ./web
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile-dev
     container_name: web
     volumes:
      - ./tmp/npm:/root/.npm:z
+     - ./web/src:/usr/src/app/src:z
     ports:
      - "80:80"
     environment:

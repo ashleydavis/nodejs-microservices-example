@@ -1,10 +1,11 @@
-FROM node:8-alpine
+FROM node:8
 
 WORKDIR /usr/src/app
 COPY package*.json ./
-COPY ./src ./src
+COPY nodemon.json ./
 
 EXPOSE 80
+
 CMD npm config set cache-min 9999999 \
     && npm install \
-    && npm start
+    && npm run start:dev
