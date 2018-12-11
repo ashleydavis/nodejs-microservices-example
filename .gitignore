@@ -4,3 +4,4 @@ ubuntu-xenial-16.04-cloudimg-console.log
 tmp/
 service/node_modules/
 web/node_modules/
+scripts/infrastructure/.terraform/

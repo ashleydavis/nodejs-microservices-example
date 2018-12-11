@@ -7,19 +7,12 @@ services:
     ports:
      - "27017:27017"
     restart: always
-
-  db-fixture:
-    image: db-fixture
-    build: ./db-fixture
-    container_name: db-fixture
-    depends_on:
-      - db
     
   service:
-    image: service
+    image: "${DOCKER_REGISTRY}/service"
     build: 
       context: ./service
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-prod
     container_name: service
     volumes:
      - ./tmp/npm:/root/.npm:z
@@ -35,10 +28,10 @@ services:
     restart: always
 
   web:
-    image: web
+    image: "${DOCKER_REGISTRY}/web"
     build: 
       context: ./web
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-prod
     container_name: web
     volumes:
      - ./tmp/npm:/root/.npm:z

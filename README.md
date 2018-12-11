@@ -69,7 +69,23 @@ Database available:
 
 ### Provision the cloud system using Terraform
 
-todo
+Please have Terraform and Azure cli installed.
+Check vagrant-provision-vm.sh for example installation commands.
+
+First time, make sure your Terraform providers are installed:
+
+    cd script/infrastructure
+    terraform init
+
+First time, build your Docker registry and Kubernetes cluster:
+
+    ./scripts/provision.sh
+
+To deploy the microservices system:
+
+    ./scripts/deploy.sh
+
+This will build your images, push them to your docker registry and then use Terraform to establish the infrastructure.
 
 ## Testing
 
@@ -84,6 +100,14 @@ You just need to install Jest (or other) then write some tests, then hook up the
 
 todo
 
-### UI TEsting
+### UI Testing
 
 todo
+
+## Resources
+
+Creating a service principle:
+https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html
+
+https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
+https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
