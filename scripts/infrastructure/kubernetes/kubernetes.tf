@@ -1,27 +1,3 @@
-provider "azurerm" {}
-
-resource "azurerm_resource_group" "k8s" {
-  name     = "${var.resource_group_name}"
-  location = "${var.location}"
-}
-
-resource "azurerm_storage_account" "docker_storage" {
-  name                     = "${var.docker_registry_name}"
-  resource_group_name      = "${azurerm_resource_group.k8s.name}"
-  location                 = "${azurerm_resource_group.k8s.location}"
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
-}
-
-resource "azurerm_container_registry" "docker_registry" {
-  name                = "nodejsmicroexample"
-  resource_group_name = "${azurerm_resource_group.k8s.name}"
-  location            = "${azurerm_resource_group.k8s.location}"
-  admin_enabled       = true
-  sku                 = "Classic"
-  storage_account_id  = "${azurerm_storage_account.docker_storage.id}"
-}
-
 resource "azurerm_kubernetes_cluster" "k8s" {
   name                = "${var.cluster_name}"
   location            = "${azurerm_resource_group.k8s.location}"
@@ -58,20 +34,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
-# todo: Examples of other outputs.
-# See video: https://channel9.msdn.com/Shows/Azure-Friday/Provisioning-Kubernetes-clusters-on-AKS-using-HashiCorp-Terraform?utm_source=newsletter&utm_medium=email&utm_campaign=Learn%20By%20Doing
-# At time: 5:18
-# Also can output some commands to configure kubectrl!
-# 5:26
-
-output "kube_config" {
-  value = "${azurerm_kubernetes_cluster.k8s.kube_config_raw}"
-}
-
-output "host" {
-  value = "${azurerm_kubernetes_cluster.k8s.kube_config.0.host}"
-}
-
 provider "kubernetes" {
   host = "${azurerm_kubernetes_cluster.k8s.kube_config.0.host}"
 
@@ -81,60 +43,6 @@ provider "kubernetes" {
 
   client_key             = "${base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_key)}"
   cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)}"
-}
-
-resource "null_resource" "build" {
-  provisioner "local-exec" {
-    command = "sudo -E docker-compose -f ../../docker-compose-prod.yml build"
-
-    environment {
-      DOCKER_REGISTRY = "${var.docker_registry_name}.azurecr.io"
-    }
-  }
-}
-
-resource "null_resource" "docker_login" {
-  depends_on = [
-    "azurerm_container_registry.docker_registry",
-  ]
-
-  provisioner "local-exec" {
-    command = "sudo -E docker login $DOCKER_REGISTRY -u=${azurerm_container_registry.docker_registry.admin_username} -p=${azurerm_container_registry.docker_registry.admin_password}"
-
-    environment {
-      DOCKER_REGISTRY = "${var.docker_registry_name}.azurecr.io"
-    }
-  }
-}
-
-resource "null_resource" "push_service" {
-  depends_on = [
-    "null_resource.build",
-    "null_resource.docker_login",
-  ]
-
-  provisioner "local-exec" {
-    command = "sudo -E docker push $DOCKER_REGISTRY/service"
-
-    environment {
-      DOCKER_REGISTRY = "${var.docker_registry_name}.azurecr.io"
-    }
-  }
-}
-
-resource "null_resource" "push_web" {
-  depends_on = [
-    "null_resource.build",
-    "null_resource.docker_login",
-  ]
-
-  provisioner "local-exec" {
-    command = "sudo -E docker push $DOCKER_REGISTRY/web"
-
-    environment {
-      DOCKER_REGISTRY = "${var.docker_registry_name}.azurecr.io"
-    }
-  }
 }
 
 resource "kubernetes_pod" "db" {
@@ -152,23 +60,19 @@ resource "kubernetes_pod" "db" {
 }
 
 resource "kubernetes_pod" "service" {
-  depends_on = ["null_resource.push_service"]
-
   metadata {
     name = "nodejs-micro-example-service"
   }
 
   spec {
     container {
-      image = "${var.docker_registry_name}.azurecr.io/service"
+      image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
       name  = "nodejs-micro-example-service"
     }
   }
 }
 
 resource "kubernetes_pod" "web" {
-  depends_on = ["null_resource.push_web"]
-
   metadata {
     # todo: does this matter?
     name = "nodejs-micro-example-web"
@@ -180,7 +84,7 @@ resource "kubernetes_pod" "web" {
 
   spec {
     container {
-      image = "${var.docker_registry_name}.azurecr.io/web"
+      image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
       name  = "nodejs-micro-example-web"
     }
   }
@@ -205,8 +109,4 @@ resource "kubernetes_service" "web" {
 
     type = "LoadBalancer"
   }
-}
-
-output "loadbalancer_ip" {
-  value = "${kubernetes_service.web.load_balancer_ingress.0.ip}"
 }

@@ -1,3 +1,6 @@
+
+#TODO: MAKE SURE ALL THESE ARE USED AND GOOD!
+
 variable "agent_count" {
   default = 1
 }

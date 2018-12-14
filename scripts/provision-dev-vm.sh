@@ -1,3 +1,7 @@
+#
+# Provision a development environment under Vagrant.
+#
+
 # https://serverfault.com/questions/227190/how-do-i-ask-apt-get-to-skip-any-interactive-post-install-configuration-steps
 export DEBIAN_FRONTEND=noninteractive
 
@@ -49,3 +53,8 @@ unzip terraform_0.11.10_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 terraform --version 
 
+#
+# User setup for docker.
+#
+sudo groupadd docker
+sudo usermod -aG docker $USER
