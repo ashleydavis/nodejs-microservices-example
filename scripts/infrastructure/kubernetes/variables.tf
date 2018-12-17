@@ -1,7 +1,4 @@
-#TODO: MAKE SURE ALL THESE ARE USED AND GOOD!
-
-variable "version" {
-}
+variable "version" {}
 
 variable "agent_count" {
   default = 1

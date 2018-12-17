@@ -1,5 +1,3 @@
-#TODO: These outputs need to be made available for later in the pipeline!
-
 output "registry_name" {
   value = "${var.docker_registry_name}"
 }

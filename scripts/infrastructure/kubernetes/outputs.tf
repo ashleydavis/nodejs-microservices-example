@@ -29,10 +29,3 @@ output "host" {
 output "loadbalancer_ip" {
   value = "${kubernetes_service.web.load_balancer_ingress.0.ip}"
 }
-
-# todo: Examples of other outputs.
-# See video: https://channel9.msdn.com/Shows/Azure-Friday/Provisioning-Kubernetes-clusters-on-AKS-using-HashiCorp-Terraform?utm_source=newsletter&utm_medium=email&utm_campaign=Learn%20By%20Doing
-# At time: 5:18
-# Also can output some commands to configure kubectrl!
-# 5:26
-

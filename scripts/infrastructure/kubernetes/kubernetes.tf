@@ -1,7 +1,14 @@
-resource "azurerm_kubernetes_cluster" "k8s" {
+provider "azurerm" {}
+
+resource "azurerm_resource_group" "main" {
+  name     = "${var.resource_group_name}"
+  location = "${var.location}"
+}
+
+resource "azurerm_kubernetes_cluster" "main" {
   name                = "${var.cluster_name}"
-  location            = "${azurerm_resource_group.k8s.location}"
-  resource_group_name = "${azurerm_resource_group.k8s.name}"
+  location            = "${azurerm_resource_group.main.location}"
+  resource_group_name = "${azurerm_resource_group.main.name}"
   dns_prefix          = "${var.dns_prefix}"
 
   linux_profile {
@@ -35,14 +42,14 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 }
 
 provider "kubernetes" {
-  host = "${azurerm_kubernetes_cluster.k8s.kube_config.0.host}"
+  host = "${azurerm_kubernetes_cluster.main.kube_config.0.host}"
 
-  #username               = "${azurerm_kubernetes_cluster.k8s.kube_config.0.username}"
-  #password               = "${azurerm_kubernetes_cluster.k8s.kube_config.0.password}"
-  client_certificate = "${base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_certificate)}"
+  #username               = "${azurerm_kubernetes_cluster.main.kube_config.0.username}"
+  #password               = "${azurerm_kubernetes_cluster.main.kube_config.0.password}"
+  client_certificate = "${base64decode(azurerm_kubernetes_cluster.main.kube_config.0.client_certificate)}"
 
-  client_key             = "${base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.client_key)}"
-  cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate)}"
+  client_key             = "${base64decode(azurerm_kubernetes_cluster.main.kube_config.0.client_key)}"
+  cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.main.kube_config.0.cluster_ca_certificate)}"
 }
 
 resource "kubernetes_pod" "db" {
