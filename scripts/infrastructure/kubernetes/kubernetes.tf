@@ -52,47 +52,107 @@ provider "kubernetes" {
   cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.main.kube_config.0.cluster_ca_certificate)}"
 }
 
-resource "kubernetes_pod" "db" {
+resource "kubernetes_deployment" "db" {
   metadata {
     name = "nodejs-micro-example-db"
+
+    labels {
+      test = "nodejs-micro-example-db"
+    }
   }
 
   spec {
-    container {
-      # todo version me
-      image = "mongo"
-      name  = "nodejs-micro-example-db"
+    replicas = 1
+
+    selector {
+      match_labels {
+        test = "nodejs-micro-example-db"
+      }
+    }
+
+    template {
+      metadata {
+        labels {
+          test = "nodejs-micro-example-db"
+        }
+      }
+
+      spec {
+        container {
+          image = "mongo"
+          name  = "nodejs-micro-example-db"
+        }
+      }
     }
   }
 }
 
-resource "kubernetes_pod" "service" {
+resource "kubernetes_deployment" "service" {
   metadata {
     name = "nodejs-micro-example-service"
+
+    labels {
+      test = "nodejs-micro-example-service"
+    }
   }
 
   spec {
-    container {
-      image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
-      name  = "nodejs-micro-example-service"
+    replicas = 1
+
+    selector {
+      match_labels {
+        test = "nodejs-micro-example-service"
+      }
+    }
+
+    template {
+      metadata {
+        labels {
+          test = "nodejs-micro-example-service"
+        }
+      }
+
+      spec {
+        container {
+          image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
+          name  = "nodejs-micro-example-service"
+        }
+      }
     }
   }
 }
 
-resource "kubernetes_pod" "web" {
+resource "kubernetes_deployment" "web" {
   metadata {
-    # todo: does this matter?
     name = "nodejs-micro-example-web"
 
     labels {
-      name = "nodejs-micro-example-web"
+      test = "nodejs-micro-example-web"
     }
   }
 
   spec {
-    container {
-      image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
-      name  = "nodejs-micro-example-web"
+    replicas = 1
+
+    selector {
+      match_labels {
+        test = "nodejs-micro-example-web"
+      }
+    }
+
+    template {
+      metadata {
+        labels {
+          test = "nodejs-micro-example-web"
+        }
+      }
+
+      spec {
+        container {
+          image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
+          name  = "nodejs-micro-example-web"
+        }
+      }
     }
   }
 }
@@ -104,7 +164,7 @@ resource "kubernetes_service" "web" {
 
   spec {
     selector {
-      name = "${kubernetes_pod.web.metadata.0.labels.name}"
+      name = "${kubernetes_deployment.web.metadata.0.labels.test}"
     }
 
     session_affinity = "ClientIP"
