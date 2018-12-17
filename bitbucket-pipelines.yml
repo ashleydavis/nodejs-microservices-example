@@ -8,7 +8,7 @@ pipelines:
             - chmod +x ./scripts/build-image.sh
             - chmod +x ./scripts/push-image.sh
             - chmod +x ./scripts/provision-kubernetes.sh
-            - chmod +x ./script/live-test.sh
+            - chmod +x ./scripts/live-test.sh
             
     - parallel: # Build Docker images and push to registry in parallel.
       - step:
@@ -27,4 +27,4 @@ pipelines:
     - step: # Provision and test cloud environment.
         script:
           - ./scripts/provision-kubernetes.sh
-          - ./script/live-test.sh
+          - ./scripts/live-test.sh
