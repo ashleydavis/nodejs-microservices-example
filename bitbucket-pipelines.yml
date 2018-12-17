@@ -5,7 +5,11 @@ pipelines:
     - step:
         script:
             - export VERSION=$BITBUCKET_BUILD_NUMBER
-
+            - chmod +x ./scripts/build-image.sh
+            - chmod +x ./scripts/push-image.sh
+            - chmod +x ./scripts/provision-kubernetes.sh
+            - chmod +x ./script/live-test.sh
+            
     - parallel: # Build Docker images and push to registry in parallel.
       - step:
           services:
