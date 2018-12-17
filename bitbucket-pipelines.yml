@@ -4,6 +4,7 @@ pipelines:
   default:
     - parallel: # Build Docker images and push to registry in parallel.
       - step:
+          name: Build service
           services:
             - docker
           script:
@@ -13,6 +14,7 @@ pipelines:
             - chmod +x ./scripts/push-image.sh
             - ./scripts/push-image.sh service
       - step:
+          name: Build web
           services:
             - docker
           script:
@@ -23,6 +25,7 @@ pipelines:
             - ./scripts/push-image.sh web
 
     - step: # Provision and test cloud environment.
+        name: Deploy cluster
         script:
           - export VERSION=$BITBUCKET_BUILD_NUMBER
           - chmod +x ./scripts/provision-kubernetes.sh
