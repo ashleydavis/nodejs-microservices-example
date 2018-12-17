@@ -8,10 +8,14 @@ pipelines:
 
     - parallel: # Build Docker images and push to registry in parallel.
       - step:
+          services:
+            - docker
           script:
             - ./scripts/build-image.sh service
             - ./scripts/push-image.sh service
       - step:
+          services:
+            - docker
           script:
             - ./scripts/build-image.sh web
             - ./scripts/push-image.sh web
