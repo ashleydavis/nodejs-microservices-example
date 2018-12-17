@@ -29,5 +29,5 @@ set -u # or set -o nounset
 : "$DOCKER_PW"
 
 export DIR=$1
-sudo -E docker login $DOCKER_REGISTRY --username $DOCKER_UN --password $DOCKER_PW
-sudo -E docker push $DOCKER_REGISTRY/$DIR:$VERSION
+docker login $DOCKER_REGISTRY --username $DOCKER_UN --password $DOCKER_PW
+docker push $DOCKER_REGISTRY/$DIR:$VERSION
