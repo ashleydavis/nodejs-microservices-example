@@ -1,9 +1,5 @@
-variable "dns_prefix" {
-  default = "nodejs-micro-example"
-}
-
 variable resource_group_name {
-  default = "nodejs-micro-example"
+  default = "nodejs-micro-example-storage"
 }
 
 variable location {

@@ -17,7 +17,7 @@ variable cluster_name {
 }
 
 variable resource_group_name {
-  default = "nodejs-micro-example"
+  default = "nodejs-micro-example-cluster"
 }
 
 variable location {
