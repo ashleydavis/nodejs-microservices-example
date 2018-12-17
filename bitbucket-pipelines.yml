@@ -2,15 +2,12 @@ image: hashicorp/terraform:light
 
 pipelines:
   default:
-    - step:
-        script:
-            - export VERSION=$BITBUCKET_BUILD_NUMBER
-            
     - parallel: # Build Docker images and push to registry in parallel.
       - step:
           services:
             - docker
           script:
+            - export VERSION=$BITBUCKET_BUILD_NUMBER
             - chmod +x ./scripts/build-image.sh
             - ./scripts/build-image.sh service
             - chmod +x ./scripts/push-image.sh
@@ -19,6 +16,7 @@ pipelines:
           services:
             - docker
           script:
+            - export VERSION=$BITBUCKET_BUILD_NUMBER
             - chmod +x ./scripts/build-image.sh
             - ./scripts/build-image.sh web
             - chmod +x ./scripts/push-image.sh
@@ -26,6 +24,7 @@ pipelines:
 
     - step: # Provision and test cloud environment.
         script:
+          - export VERSION=$BITBUCKET_BUILD_NUMBER
           - chmod +x ./scripts/provision-kubernetes.sh
           - ./scripts/provision-kubernetes.sh
           - chmod +x ./scripts/live-test.sh
