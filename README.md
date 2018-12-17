@@ -67,7 +67,7 @@ In the dev environment updates to the code on the host OS automatically flow thr
 ### Using Docker / Docker-Compose for development
 
 Have docker / docker compose installed.
-Check vagrant-provision-vm.sh for example installation commands.
+Check ./scripts/provision-dev-vm.sh for example installation commands.
 
 Run:
 
@@ -100,6 +100,12 @@ Check provision-dev-vm.sh for example installation commands.
 
 Environment variables must be set before running these scripts.
 
+To push images to your private Docker register set these variables:
+    - DOCKER_REGISTRY -> The hostname for your Docker registry.
+    - DOCKER_UN -> Username for your Docker registry.
+    - DOCKER_PW -> Password for your Docker registry.
+    - VERSION -> The version of the software you are releasing, used to tag the Docker image..
+
 To provision this system in Azure you need the following environment variables set:
     - ARM_SUBSCRIPTION_ID
     - ARM_CLIENT_ID
@@ -116,13 +122,29 @@ For more details on these environment variables please see [the Terraform docs f
 
 #### Run scripts to build, provision and deploy
 
+Have Vagrant and Virtual box installed.
+
+Boot the VM:
+
+    vagrant up
+
+Shell into the VM:
+
+    vagrant ssh
+
+In the VM, run:
+
+    cd /vagrant
+
 Before running each script, please ensure it is flagged as executable, eg:
 
     chmod +x ./scripts/build-image.sh
 
-Provision your Docker registry:
+The first time you do a build you need a Docker registry to push images to, run the follow script to provision your private Docker registry:
 
     ./scripts/provision-docker-registry.sh
+
+Please take note of the username and password that are printed out after the Docker registry is created. You'll need to set these as environment variables as described in the previous section to be able to push your images to the registry.
 
 Build the Docker images:
 
@@ -138,15 +160,10 @@ Now provision your Kubernetes cluster:
 
     ./scripts/provision-kubernetes.sh
 
-TODO: Finally To deploy the microservices system:
+You can also run all the build scripts in go using:
 
-    ./scripts/deploy.sh
+    ./scripts/build.sh
 
-This will build your images, push them to your docker registry and then use Terraform to establish the infrastructure.
-
-Please see below for environment variables you must set to run the provisioning script.
-
-TODO: build.sh
 
 ### Integration with Bitbucket Pipelines
 
@@ -154,10 +171,11 @@ This repo integrates with Bitbucket Pipelines for continuous integration / deliv
 
 If you put this repo in Bitbucket it will run the script in the file bitbucket-pipelines.yml on each push to the repository. This builds the Docker containers, copies the images to your private Docker Registry, provisions the environment on Azure and deploys the code.
 
-Please see the next section that lists [the environment variables you must set in Bitbucket](https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html)
+Please make sure you have created a private Docker registry already as mentioned in the previous section.
 
+Please see the earlier section that lists [the environment variables you must set in Bitbucket](https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html)
 
-
+Although please don't set the VERSION environment variable for Bitbucket, that's already set to the build number from Bitbucket Pipelines.
 
 ## Testing
 
@@ -170,11 +188,13 @@ You just need to install Jest (or other) then write some tests, then hook up the
 
 ### Integration testing
 
-todo
+Integration testing can also be done using Jest.
 
-### UI Testing
+### API / UI Testing
 
-todo
+My preference at the moment is to use Cypress for both API and UI testing.
+
+Please see this repo for an example: https://github.com/ashleydavis/cypress-example
 
 ## Resources
 
