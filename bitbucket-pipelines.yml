@@ -6,21 +6,17 @@ pipelines:
         script:
             - export VERSION=$BITBUCKET_BUILD_NUMBER
 
-    # Build Docker images and push to registry in parallel.
-    - parallel:
-        -step:
+    - parallel: # Build Docker images and push to registry in parallel.
+      - step:
           script:
             - ./scripts/build-image.sh service
             - ./scripts/push-image.sh service
-        -step:
+      - step:
           script:
             - ./scripts/build-image.sh web
             - ./scripts/push-image.sh web
 
-    - step:
+    - step: # Provision and test cloud environment.
         script:
-          # Provision and test cloud environment.
           - ./scripts/provision-kubernetes.sh
-
-          # Run tests against the live system.
           - ./script/live-test.sh
