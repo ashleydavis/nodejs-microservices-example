@@ -164,7 +164,7 @@ resource "kubernetes_service" "web" {
 
   spec {
     selector {
-      name = "${kubernetes_deployment.web.metadata.0.labels.test}"
+      test = "${kubernetes_deployment.web.metadata.0.labels.test}"
     }
 
     session_affinity = "ClientIP"
