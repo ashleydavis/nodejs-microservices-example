@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "docker_storage" {
 }
 
 resource "azurerm_container_registry" "docker_registry" {
-  name                = "nodejsmicroexample"
+  name                = "${var.docker_registry_name}"
   resource_group_name = "${azurerm_resource_group.main.name}"
   location            = "${azurerm_resource_group.main.location}"
   admin_enabled       = true

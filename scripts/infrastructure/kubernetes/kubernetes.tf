@@ -80,7 +80,7 @@ resource "kubernetes_deployment" "db" {
       spec {
         container {
           image = "mongo"
-          name  = "nodejs-micro-example-db"
+          name  = "db"
         }
       }
     }
@@ -115,7 +115,14 @@ resource "kubernetes_deployment" "service" {
       spec {
         container {
           image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
-          name  = "nodejs-micro-example-service"
+          name  = "service"
+
+          env = [
+            {
+              name  = "DBHOST"
+              value = "mongodb://db:27017"
+            },
+          ]
         }
       }
     }
@@ -150,7 +157,7 @@ resource "kubernetes_deployment" "web" {
       spec {
         container {
           image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
-          name  = "nodejs-micro-example-web"
+          name  = "web"
         }
       }
     }

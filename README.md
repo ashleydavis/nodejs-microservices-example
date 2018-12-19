@@ -12,7 +12,9 @@ Based on some of my previous examples:
 ## Requirements
 
 - Vagrant and Virtual Box must be installed. When you bring up the Vagrant VM it has Docker, Docker-Compose, Terraform and the Azure CLI installed and ready to go.
-- To provision to the cloud you need an Azure account and a service principle setup for authentication (see below for a link to instructions on that).
+- To provision on Azure create a service principle for authentication: [https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html](https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html).
+- You need an Azure storage account and container to store Terraform state: [https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state](https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state)
+
 
 ## Important files
 
