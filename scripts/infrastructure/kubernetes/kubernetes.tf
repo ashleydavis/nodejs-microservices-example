@@ -5,6 +5,13 @@ resource "azurerm_resource_group" "main" {
   location = "${var.location}"
 }
 
+# Generate an SSH key.
+# See video: https://channel9.msdn.com/Shows/Azure-Friday/Provisioning-Kubernetes-clusters-on-AKS-using-HashiCorp-Terraform?utm_source=newsletter&utm_medium=email&utm_campaign=Learn%20By%20Doing
+# At time: 3:15, 4:50 
+resource "tls_private_key" "key" {
+  algorithm = "RSA"
+}
+
 resource "azurerm_kubernetes_cluster" "main" {
   name                = "${var.cluster_name}"
   location            = "${azurerm_resource_group.main.location}"
@@ -12,14 +19,10 @@ resource "azurerm_kubernetes_cluster" "main" {
   dns_prefix          = "${var.dns_prefix}"
 
   linux_profile {
-    #Todo: can pull adminusername from variables.
-    admin_username = "ubuntu"
+    admin_username = "${var.admin_username}"
 
-    # todo: This ssh_key can be generated.
-    # See video: https://channel9.msdn.com/Shows/Azure-Friday/Provisioning-Kubernetes-clusters-on-AKS-using-HashiCorp-Terraform?utm_source=newsletter&utm_medium=email&utm_campaign=Learn%20By%20Doing
-    # At time: 3:15, 4:50 
     ssh_key {
-      key_data = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqaZoyiz1qbdOQ8xEf6uEu1cCwYowo5FHtsBhqLoDnnp7KUTEBN+L2NxRIfQ781rxV6Iq5jSav6b2Q8z5KiseOlvKA/RF2wqU0UPYqQviQhLmW6THTpmrv/YkUCuzxDpsH7DUDhZcwySLKVVe0Qm3+5N2Ta6UYH3lsDf9R9wTP2K/+vAnflKebuypNlmocIvakFWoZda18FOmsOoIVXQ8HWFNCuw9ZCunMSN62QGamCe3dL5cXlkgHYv7ekJE15IA9aOJcM7e90oeTqo+7HTcWfdu0qQqPWY5ujyMw/llas8tsXY85LFqRnr3gJ02bAscjc477+X+j/gkpFoN1QEmt terraform@demo.tld"
+      key_data = "${trimspace(tls_private_key.key.public_key_openssh)} ${var.admin_username}@azure.com"
     }
   }
 

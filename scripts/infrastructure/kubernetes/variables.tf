@@ -1,5 +1,9 @@
 variable "version" {}
 
+variable "admin_username" {
+  default = "linux_admin"
+}
+
 variable "agent_count" {
   default = 1
 }

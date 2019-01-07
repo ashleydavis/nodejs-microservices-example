@@ -29,3 +29,25 @@ output "host" {
 output "loadbalancer_ip" {
   value = "${kubernetes_service.web.load_balancer_ingress.0.ip}"
 }
+
+output "private_key" {
+  value = "${tls_private_key.key.private_key_pem}"
+}
+
+output "public_key" {
+  value = "${tls_private_key.key.public_key_pem}"
+}
+
+output "configure" {
+  value = <<CONFIGURE
+
+Run the following commands to configure the Kubernetes client:
+
+$ terraform output kube_config > ~/.kube/aksconfig
+$ export KUBECONFIG=~/.kube/aksconfig
+
+Test configuration using kubectl:
+
+$ kubectl get nodes
+CONFIGURE
+}
