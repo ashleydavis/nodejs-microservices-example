@@ -1,5 +1,7 @@
 variable "version" {}
 
+variable "environment" {}
+
 variable "admin_username" {
   default = "linux_admin"
 }
