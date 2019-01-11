@@ -27,6 +27,8 @@ Based on some of my previous examples:
         - docker/       -> Terraform scripts to build a private Docker registry.
         - kubernetes/   -> Terraform scripts to build a Kubernetes cluster to host our Docker containers.
     - build.sh          -> Master build script. Runs all other scripts in this directory in sequence. Can build this system in the cloud from scratch.
+- service/              -> An example microservice.
+- web/                  -> Example microservice with a front-end.
 
 ## Starting the microservices application
 
@@ -93,6 +95,8 @@ Database available:
 
 In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon.
 
+## Starting the application in production
+
 ### Provision the cloud system using Terraform
 
 Please have Terraform and Azure CLI installed.
@@ -103,24 +107,26 @@ Check provision-dev-vm.sh for example installation commands.
 Environment variables must be set before running these scripts.
 
 To push images to your private Docker register set these variables:
-    - DOCKER_REGISTRY -> The hostname for your Docker registry.
-    - DOCKER_UN -> Username for your Docker registry.
-    - DOCKER_PW -> Password for your Docker registry.
-    - VERSION -> The version of the software you are releasing, used to tag the Docker image..
+- DOCKER_REGISTRY -> The hostname for your Docker registry.
+- DOCKER_UN -> Username for your Docker registry.
+- DOCKER_PW -> Password for your Docker registry.
+- VERSION -> The version of the software you are releasing, used to tag the Docker image..
 
 To provision this system in Azure you need the following environment variables set:
-    - ARM_SUBSCRIPTION_ID
-    - ARM_CLIENT_ID
-    - ARM_CLIENT_SECRET 
-    - ARM_TENANT_ID
+- ARM_SUBSCRIPTION_ID
+- ARM_CLIENT_ID
+- ARM_CLIENT_SECRET 
+- ARM_TENANT_ID
 
 For more details on these environment variables please see [the Terraform docs for the Azure provider]  (https://www.terraform.io/docs/providers/azurerm/index.html#argument-reference).
 
-- For storing Terraform state in Azure storage set these environment variables:
-    - TF_BACKEND_RES_GROUP
-    - TF_BACKEND_STORAGE_ACC
-    - TF_BACKEND_CONTAINER
-    - TF_BACKEND_KEY
+For storing Terraform state in Azure storage set these environment variables:
+- TF_BACKEND_RES_GROUP
+- TF_BACKEND_STORAGE_ACC
+- TF_BACKEND_CONTAINER
+
+For storing and Terraform state and to select the Kubernetes cluster for deployment, set the following environment variable:
+- ENVIRONMENT -> Set this to 'test' or 'production'.
 
 #### Run scripts to build, provision and deploy
 
@@ -148,24 +154,25 @@ The first time you do a build you need a Docker registry to push images to, run 
 
 Please take note of the username and password that are printed out after the Docker registry is created. You'll need to set these as environment variables as described in the previous section to be able to push your images to the registry.
 
-Build the Docker images:
+Build the Docker image:
 
-    ./scripts/build-image.sh service
-    ./scripts/build-image.sh web
+    sudo -E ./scripts/build-image.sh service
+    sudo -E ./scripts/build-image.sh web
 
 Push the Docker image to the Docker registry:
 
-    ./scripts/push-image.sh service
-    ./scripts/push-image.sh web
+    sudo -E ./scripts/push-image.sh service
+    sudo -E ./scripts/push-image.sh web
 
 Now provision your Kubernetes cluster:
 
-    ./scripts/provision-kubernetes.sh
+    sudo -E ./scripts/provision-kubernetes.sh
 
 You can also run all the build scripts in go using:
 
-    ./scripts/build.sh
+    sudo -E ./scripts/build.sh
 
+NOTE: 'sudo' is used when running the provisioning scripts under the Vagrant VM, but not when running under Bitbucket Pipelines.
 
 ### Integration with Bitbucket Pipelines
 
