@@ -15,15 +15,15 @@ variable "ssh_public_key" {
 }
 
 variable "dns_prefix" {
-  default = "nodejs-micro-example"
+  default = "example"
 }
 
 variable cluster_name {
-  default = "nodejs-micro-example"
+  default = "example"
 }
 
 variable resource_group_name {
-  default = "nodejs-micro-example-cluster"
+  default = "example-cluster"
 }
 
 variable location {

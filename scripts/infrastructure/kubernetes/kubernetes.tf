@@ -57,10 +57,10 @@ provider "kubernetes" {
 
 resource "kubernetes_deployment" "db" {
   metadata {
-    name = "nodejs-micro-example-db"
+    name = "db"
 
     labels {
-      test = "nodejs-micro-example-db"
+      test = "db"
     }
   }
 
@@ -69,14 +69,14 @@ resource "kubernetes_deployment" "db" {
 
     selector {
       match_labels {
-        test = "nodejs-micro-example-db"
+        test = "db"
       }
     }
 
     template {
       metadata {
         labels {
-          test = "nodejs-micro-example-db"
+          test = "db"
         }
       }
 
@@ -92,10 +92,10 @@ resource "kubernetes_deployment" "db" {
 
 resource "kubernetes_deployment" "service" {
   metadata {
-    name = "nodejs-micro-example-service"
+    name = "service"
 
     labels {
-      test = "nodejs-micro-example-service"
+      test = "service"
     }
   }
 
@@ -104,14 +104,14 @@ resource "kubernetes_deployment" "service" {
 
     selector {
       match_labels {
-        test = "nodejs-micro-example-service"
+        test = "service"
       }
     }
 
     template {
       metadata {
         labels {
-          test = "nodejs-micro-example-service"
+          test = "service"
         }
       }
 
@@ -134,10 +134,10 @@ resource "kubernetes_deployment" "service" {
 
 resource "kubernetes_deployment" "web" {
   metadata {
-    name = "nodejs-micro-example-web"
+    name = "web"
 
     labels {
-      test = "nodejs-micro-example-web"
+      test = "web"
     }
   }
 
@@ -146,14 +146,14 @@ resource "kubernetes_deployment" "web" {
 
     selector {
       match_labels {
-        test = "nodejs-micro-example-web"
+        test = "web"
       }
     }
 
     template {
       metadata {
         labels {
-          test = "nodejs-micro-example-web"
+          test = "web"
         }
       }
 
