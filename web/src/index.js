@@ -34,7 +34,7 @@ async function main() {
     app.get("/api/data", (req, res) => {
         axios.get(SERVICE_URL + "/api/data")
             .then(response => {
-                res.json(response);
+                res.json(response.data);
             })
             .catch(err => {
                 console.error("Error forwarding request:");
