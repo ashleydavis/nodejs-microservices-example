@@ -84,8 +84,29 @@ resource "kubernetes_deployment" "db" {
         container {
           image = "mongo"
           name  = "db"
+
+          port {
+            container_port = 27017
+          }
         }
       }
+    }
+  }
+}
+
+resource "kubernetes_service" "db" {
+  metadata {
+    name = "db"
+  }
+
+  spec {
+    selector {
+      test = "${kubernetes_deployment.db.metadata.0.labels.test}"
+    }
+
+    port {
+      port        = 27017
+      target_port = 27017
     }
   }
 }
@@ -120,14 +141,35 @@ resource "kubernetes_deployment" "service" {
           image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
           name  = "service"
 
+          port {
+            container_port = 80
+          }
+
           env = [
             {
               name  = "DBHOST"
-              value = "mongodb://db:27017"
+              value = "mongodb://db.default.svc.cluster.local:27017"
             },
           ]
         }
       }
+    }
+  }
+}
+
+resource "kubernetes_service" "service" {
+  metadata {
+    name = "service"
+  }
+
+  spec {
+    selector {
+      test = "${kubernetes_deployment.service.metadata.0.labels.test}"
+    }
+
+    port {
+      port        = 80
+      target_port = 80
     }
   }
 }
@@ -161,6 +203,10 @@ resource "kubernetes_deployment" "web" {
         container {
           image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
           name  = "web"
+
+          port {
+            container_port = 80
+          }
         }
       }
     }

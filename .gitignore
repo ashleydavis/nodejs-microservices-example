@@ -11,3 +11,4 @@ scripts/infrastructure/kubernetes/terraform.tfstate.backup
 scripts/infrastructure/kubernetes/terraform.tfstate
 scripts/infrastructure/docker/terraform.tfstate.backup
 scripts/infrastructure/docker/terraform.tfstate
+scripts/setup-env-var-secrets.sh

@@ -31,8 +31,8 @@ async function main() {
         res.send('Hello computer!\n');
     });
 
-    app.get("/data", (req, res) => {
-        axios.get(SERVICE_URL + "/data")
+    app.get("/api/data", (req, res) => {
+        axios.get(SERVICE_URL + "/api/data")
             .then(response => {
                 res.json(response);
             })
