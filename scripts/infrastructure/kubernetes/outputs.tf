@@ -26,10 +26,6 @@ output "host" {
   value = "${azurerm_kubernetes_cluster.main.kube_config.0.host}"
 }
 
-output "loadbalancer_ip" {
-  value = "${kubernetes_service.web.load_balancer_ingress.0.ip}"
-}
-
 output "private_key" {
   value = "${tls_private_key.key.private_key_pem}"
 }
