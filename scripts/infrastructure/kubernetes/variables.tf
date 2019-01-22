@@ -23,7 +23,7 @@ variable cluster_name {
 }
 
 variable resource_group_name {
-  default = "example-cluster"
+  default = "ms-example-cluster"
 }
 
 variable location {
@@ -31,5 +31,5 @@ variable location {
 }
 
 variable docker_registry_name {
-  default = "example"
+  default = "msexample"
 }

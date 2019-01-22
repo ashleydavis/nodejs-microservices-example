@@ -1,5 +1,5 @@
 variable resource_group_name {
-  default = "example-storage"
+  default = "ms-example-storage"
 }
 
 variable location {
@@ -7,5 +7,5 @@ variable location {
 }
 
 variable docker_registry_name {
-  default = "example"
+  default = "msexample"
 }
