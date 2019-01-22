@@ -1,7 +1,7 @@
 resource "azurerm_public_ip" "web" {
   name                = "webPublicIP"
   location            = "${azurerm_resource_group.main.location}"
-  resource_group_name = "${azurerm_resource_group.main.name}"
+  resource_group_name = "MC_${azurerm_resource_group.main.name}_${azurerm_kubernetes_cluster.main.name}_${azurerm_kubernetes_cluster.main.location}"
   allocation_method   = "Static"
 }
 
