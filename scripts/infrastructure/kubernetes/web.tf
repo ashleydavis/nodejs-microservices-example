@@ -1,3 +1,14 @@
+resource "azurerm_public_ip" "web" {
+  name                = "webPublicIP"
+  location            = "${azurerm_resource_group.main.location}"
+  resource_group_name = "${azurerm_resource_group.main.name}"
+  allocation_method   = "Static"
+}
+
+output "web_ip" {
+  value = "${azurerm_public_ip.web.ip_address}"
+}
+
 resource "kubernetes_deployment" "web" {
   metadata {
     name = "web"
@@ -54,10 +65,7 @@ resource "kubernetes_service" "web" {
       target_port = 80
     }
 
-    type = "LoadBalancer"
+    type             = "LoadBalancer"
+    load_balancer_ip = "${azurerm_public_ip.web.ip_address}"
   }
-}
-
-output "web_ip" {
-  value = "${kubernetes_service.web.load_balancer_ingress.0.ip}"
 }
