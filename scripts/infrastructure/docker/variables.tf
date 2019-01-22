@@ -1,5 +1,5 @@
 variable resource_group_name {
-  default = "nodejs-micro-example-storage"
+  default = "example-storage"
 }
 
 variable location {
@@ -7,5 +7,5 @@ variable location {
 }
 
 variable docker_registry_name {
-  default = "nodejsmicroexample"
+  default = "example"
 }

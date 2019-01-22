@@ -31,5 +31,5 @@ variable location {
 }
 
 variable docker_registry_name {
-  default = "nodejsmicroexample"
+  default = "example"
 }
