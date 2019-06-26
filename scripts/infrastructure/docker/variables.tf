@@ -7,7 +7,7 @@ variable location {
 }
 
 variable docker_registry_name {
-  default = "msexample"
+  default = "msexampletest"
 }
 
 variable storage_account_name {
