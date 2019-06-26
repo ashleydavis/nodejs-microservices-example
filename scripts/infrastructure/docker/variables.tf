@@ -1,5 +1,5 @@
 variable resource_group_name {
-  default = "ms-example-storage"
+  default = "ms-example-storage-test"
 }
 
 variable location {
