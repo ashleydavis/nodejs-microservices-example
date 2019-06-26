@@ -1,4 +1,4 @@
-variable "version" {}
+variable "buildno" {}
 
 variable "environment" {}
 

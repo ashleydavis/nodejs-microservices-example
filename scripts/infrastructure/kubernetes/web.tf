@@ -36,7 +36,7 @@ resource "kubernetes_deployment" "web" {
 
       spec {
         container {
-          image = "${var.docker_registry_name}.azurecr.io/web:${var.version}"
+          image = "${var.docker_registry_name}.azurecr.io/web:${var.buildno}"
           name  = "web"
 
           port {

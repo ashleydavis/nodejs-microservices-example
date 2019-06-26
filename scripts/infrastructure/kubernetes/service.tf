@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "service" {
 
       spec {
         container {
-          image = "${var.docker_registry_name}.azurecr.io/service:${var.version}"
+          image = "${var.docker_registry_name}.azurecr.io/service:${var.buildno}"
           name  = "service"
 
           port {

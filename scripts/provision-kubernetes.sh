@@ -19,6 +19,6 @@ terraform init \
     -backend-config="key=$ENVIRONMENT"
 terraform apply -auto-approve \
     -var "environment=$ENVIRONMENT" \
-    -var "version=$VERSION" \
+    -var "buildno=$VERSION" \
     -var "client_id=$ARM_CLIENT_ID" \
     -var "client_secret=$ARM_CLIENT_SECRET"

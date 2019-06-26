@@ -48,8 +48,8 @@ sudo apt-get -yq install apt-transport-https azure-cli
 # Install Terraform
 #
 sudo apt-get -yq install unzip
-wget https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip
-unzip terraform_0.11.10_linux_amd64.zip
+wget https://releases.hashicorp.com/terraform/0.12.3/terraform_0.12.3_linux_amd64.zip
+unzip terraform_0.12.3_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 terraform --version 
 
