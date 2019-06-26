@@ -34,13 +34,13 @@ Based on some of my previous examples:
 
 ### Using Vagrant for development
 
-Have Vagrant and Virtual box installed.
+You must have Vagrant and Virtual box installed.
 
 Boot the VM:
 
     vagrant up
 
-Shell into the VM:
+Shell into the VM's OS:
 
     vagrant ssh
 
@@ -54,15 +54,15 @@ To build after you change code:
 
     sudo docker-compose up --build
 
-Web page now available:
+A web page is now available on the host OS:
 
     http://127.0.0.1:7000/
 
-API available:
+An basic/example API is also available on the host OS:
 
-    http://127.0.0.1:7100/data
+    http://127.0.0.1:7100/api/data
 
-Database available:
+The Mongodb database is available on the host OS:
 
     mongodb://127.0.0.1:7200
 
