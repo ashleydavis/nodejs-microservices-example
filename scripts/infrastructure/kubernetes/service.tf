@@ -2,7 +2,7 @@ resource "kubernetes_deployment" "service" {
   metadata {
     name = "service"
 
-    labels {
+    labels = {
       test = "service"
     }
   }
@@ -11,14 +11,14 @@ resource "kubernetes_deployment" "service" {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         test = "service"
       }
     }
 
     template {
       metadata {
-        labels {
+        labels = {
           test = "service"
         }
       }
@@ -32,12 +32,10 @@ resource "kubernetes_deployment" "service" {
             container_port = 80
           }
 
-          env = [
-            {
-              name  = "DBHOST"
-              value = "mongodb://db.default.svc.cluster.local:27017"
-            },
-          ]
+          env {
+            name  = "DBHOST"
+            value = "mongodb://db.default.svc.cluster.local:27017"
+          }
         }
       }
     }
@@ -50,8 +48,8 @@ resource "kubernetes_service" "service" {
   }
 
   spec {
-    selector {
-      test = "${kubernetes_deployment.service.metadata.0.labels.test}"
+    selector = {
+      test = kubernetes_deployment.service.metadata[0].labels.test
     }
 
     port {
@@ -60,3 +58,4 @@ resource "kubernetes_service" "service" {
     }
   }
 }
+

@@ -2,7 +2,7 @@ resource "kubernetes_deployment" "db" {
   metadata {
     name = "db"
 
-    labels {
+    labels = {
       test = "db"
     }
   }
@@ -11,14 +11,14 @@ resource "kubernetes_deployment" "db" {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         test = "db"
       }
     }
 
     template {
       metadata {
-        labels {
+        labels = {
           test = "db"
         }
       }
@@ -43,8 +43,8 @@ resource "kubernetes_service" "db" {
   }
 
   spec {
-    selector {
-      test = "${kubernetes_deployment.db.metadata.0.labels.test}"
+    selector = {
+      test = kubernetes_deployment.db.metadata[0].labels.test
     }
 
     port {
@@ -53,3 +53,4 @@ resource "kubernetes_service" "db" {
     }
   }
 }
+

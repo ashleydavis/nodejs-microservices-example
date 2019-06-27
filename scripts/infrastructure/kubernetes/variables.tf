@@ -1,6 +1,8 @@
-variable "buildno" {}
+variable "buildno" {
+}
 
-variable "environment" {}
+variable "environment" {
+}
 
 variable "admin_username" {
   default = "linux_admin"
@@ -18,18 +20,19 @@ variable "dns_prefix" {
   default = "example"
 }
 
-variable cluster_name {
+variable "cluster_name" {
   default = "example"
 }
 
-variable resource_group_name {
+variable "resource_group_name" {
   default = "ms-example-cluster"
 }
 
-variable location {
+variable "location" {
   default = "Central US"
 }
 
-variable docker_registry_name {
+variable "docker_registry_name" {
   default = "msexampletest"
 }
+

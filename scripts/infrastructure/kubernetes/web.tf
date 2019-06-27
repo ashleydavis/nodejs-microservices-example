@@ -1,19 +1,19 @@
 resource "azurerm_public_ip" "web" {
   name                = "web-public-ip"
-  location            = "${azurerm_resource_group.main.location}"
+  location            = azurerm_resource_group.main.location
   resource_group_name = "MC_${azurerm_resource_group.main.name}_${azurerm_kubernetes_cluster.main.name}_${azurerm_kubernetes_cluster.main.location}"
   allocation_method   = "Static"
 }
 
 output "web_ip" {
-  value = "${azurerm_public_ip.web.ip_address}"
+  value = azurerm_public_ip.web.ip_address
 }
 
 resource "kubernetes_deployment" "web" {
   metadata {
     name = "web"
 
-    labels {
+    labels = {
       test = "web"
     }
   }
@@ -22,14 +22,14 @@ resource "kubernetes_deployment" "web" {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         test = "web"
       }
     }
 
     template {
       metadata {
-        labels {
+        labels = {
           test = "web"
         }
       }
@@ -54,8 +54,8 @@ resource "kubernetes_service" "web" {
   }
 
   spec {
-    selector {
-      test = "${kubernetes_deployment.web.metadata.0.labels.test}"
+    selector = {
+      test = kubernetes_deployment.web.metadata[0].labels.test
     }
 
     session_affinity = "ClientIP"
@@ -66,6 +66,7 @@ resource "kubernetes_service" "web" {
     }
 
     type             = "LoadBalancer"
-    load_balancer_ip = "${azurerm_public_ip.web.ip_address}"
+    load_balancer_ip = azurerm_public_ip.web.ip_address
   }
 }
+
