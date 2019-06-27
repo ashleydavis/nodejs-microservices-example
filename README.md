@@ -34,7 +34,9 @@ Based on some of my previous examples:
 
 ### Using Vagrant for development
 
-You must have Vagrant and Virtual box installed.
+Docker/Docker-Compose is required to run this example microservices application, but if you don't want to install these directly on your host OS you can use a virtual machine (VM) under Vagrant and Virtual Box for development. Follow the steps in this section to boot the VM and then start the microservices application.
+
+To proceed in this section you must have Vagrant and Virtual Box installed.
 
 Boot the VM:
 
@@ -66,12 +68,18 @@ The Mongodb database is available on the host OS:
 
     mongodb://127.0.0.1:7200
 
-In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon.
+In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker-Compose.
 
 ### Using Docker / Docker-Compose for development
 
-Have docker / docker compose installed.
+If you have Docker/Docker-Compose installed directly on your host OS you don't need Vagrant or Virtual Box. Follow the steps in this section to book the microservices application for developent using Docker-Compose.
+
+To proceed in this section you must have Docker/Docker-Compose installed.
 Check ./scripts/provision-dev-vm.sh for example installation commands.
+
+Change directory to the microservices application:
+
+    cd nodejs-microservices-example
 
 Run:
 
@@ -81,19 +89,19 @@ To build after you change code:
 
     docker-compose up --build
 
-Web page now available:
+A web page is now available:
 
     http://127.0.0.1:80/
 
-API available:
+An basic/example API is also available:
 
-    http://127.0.0.1:8080/data
+    http://127.0.0.1:8080/api/data
 
-Database available:
+The Mongodb database is available:
 
     mongodb://127.0.0.1:27017
 
-In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon.
+In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker-Compose.
 
 ## Starting the application in production
 
@@ -102,7 +110,7 @@ In the dev environment updates to the code on the host OS automatically flow thr
 Please have Terraform and Azure CLI installed.
 Check provision-dev-vm.sh for example installation commands.
 
-#### Environment variables for provisioning
+#### Environment variables for provisioning (Azure)
 
 Environment variables must be set before running these scripts.
 
@@ -112,11 +120,16 @@ To push images to your private Docker register set these variables:
 - DOCKER_PW -> Password for your Docker registry.
 - VERSION -> The version of the software you are releasing, used to tag the Docker image..
 
-To provision this system in Azure you need the following environment variables set:
+To provision this application in the cloud you need to set the following environment variables to authenticate with Azure:
+
 - ARM_SUBSCRIPTION_ID
 - ARM_CLIENT_ID
 - ARM_CLIENT_SECRET 
 - ARM_TENANT_ID
+
+Another simpler way to authenticate is to use the following command (although this is manual and so won't work for continous delivery):
+
+    az login
 
 For more details on these environment variables please see [the Terraform docs for the Azure provider]  (https://www.terraform.io/docs/providers/azurerm/index.html#argument-reference).
 
@@ -206,6 +219,9 @@ My preference at the moment is to use Cypress for both API and UI testing.
 Please see this repo for an example: https://github.com/ashleydavis/cypress-example
 
 ## Resources
+
+Setting up Terraform for Azure
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure
 
 Creating a service principle:
 https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html

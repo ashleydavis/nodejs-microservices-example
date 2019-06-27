@@ -13,3 +13,4 @@ scripts/infrastructure/docker/terraform.tfstate.backup
 scripts/infrastructure/docker/terraform.tfstate
 scripts/setup-env-var-secrets.sh
 scripts/infrastructure/docker/.terraform.tfstate.lock.info
+*.bak
