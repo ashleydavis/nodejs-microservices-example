@@ -2,6 +2,12 @@
 
 Example of Node.js microservices setup using Docker, Docker-Compose, Kubernetes and Terraform.
 
+Follow [the developer on Twitter](https://twitter.com/ashleydavis75) for updates. 
+
+Need to build a microservices application? Learn how to do this with [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
+
+Need to do exploratory coding, data analysis and visualization in JavaScript/TypeScript? [Check out Data-Forge Notebook](http://www.data-forge-notebook.com/)
+
 Based on some of my previous examples:
 
 - https://github.com/ashleydavis/docker-compose-nodejs-example
