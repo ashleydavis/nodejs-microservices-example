@@ -17,7 +17,7 @@ Based on some of my previous examples:
 
 ## Requirements
 
-- Vagrant and Virtual Box must be installed. When you bring up the Vagrant VM it has Docker, Docker-Compose, Terraform and the Azure CLI installed and ready to go.
+- You should have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
 - To provision on Azure create a service principle for authentication: [https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html](https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html).
 - You need an Azure storage account and container to store Terraform state: [https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state](https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state)
 
@@ -26,7 +26,6 @@ Based on some of my previous examples:
 
 - bitbucket-pipelines.yml -> Script that builds this system in the cloud on push to a Bitbucket repo.
 - docker-compose.yml -> Script that boots the whole system locally for development and testing.
-- Vagrantfile - Boots an Ubuntu VM that can be used for development, testing and running the provisioning scripts.
 - db-fixture/           -> Docker container configure to load a database fixture into the MongoDB database.
 - scripts/              -> Scripts for building and provisioning the system.
     - infrastructure/   -> Terraform scripts to build the cloud infrastructure.
@@ -38,85 +37,47 @@ Based on some of my previous examples:
 
 ## Starting the microservices application
 
-### Using Vagrant for development
-
-Docker/Docker-Compose is required to run this example microservices application, but if you don't want to install these directly on your host OS you can use a virtual machine (VM) under Vagrant and Virtual Box for development. Follow the steps in this section to boot the VM and then start the microservices application.
-
-To proceed in this section you must have Vagrant and Virtual Box installed.
-
-Boot the VM:
-
-    vagrant up
-
-Shell into the VM's OS:
-
-    vagrant ssh
-
-In the VM, run:
-
-    cd /vagrant
-
-    sudo docker-compose up
-
-To build after you change code:
-
-    sudo docker-compose up --build
-
-A web page is now available on the host OS:
-
-    http://127.0.0.1:7000/
-
-An basic/example API is also available on the host OS:
-
-    http://127.0.0.1:7100/api/data
-
-The Mongodb database is available on the host OS:
-
-    mongodb://127.0.0.1:7200
-
-In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker-Compose.
-
-### Using Docker / Docker-Compose for development
-
-If you have Docker/Docker-Compose installed directly on your host OS you don't need Vagrant or Virtual Box. Follow the steps in this section to book the microservices application for developent using Docker-Compose.
-
-To proceed in this section you must have Docker/Docker-Compose installed.
-Check ./scripts/provision-dev-vm.sh for example installation commands.
+Follow the steps in this section to book the microservices application for developent using Docker.
 
 Change directory to the microservices application:
 
-    cd nodejs-microservices-example
+```bash
+cd nodejs-microservices-example
+```
 
-Run:
+Use Docker Compose to start the microservies application:
 
-    docker-compose up
+```bash
+docker compose up
+```
 
 To build after you change code:
 
-    docker-compose up --build
+```bash
+docker compose up --build
+```
 
 A web page is now available:
 
-    http://127.0.0.1:80/
+    http://127.0.0.1:4000
 
-An basic/example API is also available:
+An example REST API is also available:
 
-    http://127.0.0.1:8080/api/data
+    http://127.0.0.1:4001/api/data
 
 The Mongodb database is available:
 
-    mongodb://127.0.0.1:27017
+    mongodb://127.0.0.1:4002
 
-In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker-Compose.
+In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker Compose.
 
 ## Starting the application in production
 
 ### Provision the cloud system using Terraform
 
 Please have Terraform and Azure CLI installed.
-Check provision-dev-vm.sh for example installation commands.
 
-#### Environment variables for provisioning (Azure)
+### Environment variables for provisioning (Azure)
 
 Environment variables must be set before running these scripts.
 
@@ -135,7 +96,9 @@ To provision this application in the cloud you need to set the following environ
 
 Another simpler way to authenticate is to use the following command (although this is manual and so won't work for continous delivery):
 
-    az login
+```bash
+az login
+```
 
 For more details on these environment variables please see [the Terraform docs for the Azure provider]  (https://www.terraform.io/docs/providers/azurerm/index.html#argument-reference).
 
@@ -149,49 +112,45 @@ For storing and Terraform state and to select the Kubernetes cluster for deploym
 
 #### Run scripts to build, provision and deploy
 
-Have Vagrant and Virtual box installed.
-
-Boot the VM:
-
-    vagrant up
-
-Shell into the VM:
-
-    vagrant ssh
-
-In the VM, run:
-
-    cd /vagrant
-
 Before running each script, please ensure it is flagged as executable, eg:
 
-    chmod +x ./scripts/build-image.sh
+```bash
+chmod +x ./scripts/build-image.sh
+```
 
 The first time you do a build you need a Docker registry to push images to, run the follow script to provision your private Docker registry:
 
-    ./scripts/provision-docker-registry.sh
+```bash
+./scripts/provision-docker-registry.sh
+```
 
 Please take note of the username and password that are printed out after the Docker registry is created. You'll need to set these as environment variables as described in the previous section to be able to push your images to the registry.
 
 Build the Docker image:
 
-    sudo -E ./scripts/build-image.sh service
-    sudo -E ./scripts/build-image.sh web
+```bash
+./scripts/build-image.sh service
+./scripts/build-image.sh web
+```
 
-Push the Docker image to the Docker registry:
+Push the Docker image to your container registry:
 
-    sudo -E ./scripts/push-image.sh service
-    sudo -E ./scripts/push-image.sh web
+```bash
+./scripts/push-image.sh service
+./scripts/push-image.sh web
+```
 
 Now provision your Kubernetes cluster:
 
-    sudo -E ./scripts/provision-kubernetes.sh
+```bash
+./scripts/provision-kubernetes.sh
+```
 
 You can also run all the build scripts in go using:
 
-    sudo -E ./scripts/build.sh
-
-NOTE: 'sudo' is used when running the provisioning scripts under the Vagrant VM, but not when running under Bitbucket Pipelines.
+```bash
+./scripts/build.sh
+```
 
 ### Integration with Bitbucket Pipelines
 
@@ -204,25 +163,6 @@ Please make sure you have created a private Docker registry already as mentioned
 Please see the earlier section that lists [the environment variables you must set in Bitbucket](https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html)
 
 Although please don't set the VERSION environment variable for Bitbucket, that's already set to the build number from Bitbucket Pipelines.
-
-## Testing
-
-### Unit testing
-
-Each service can be tested indepdently, but that's not included in this example.
-You just need to install Jest (or other) then write some tests, then hook up the npm test script so you can run:
-
-    npm test
-
-### Integration testing
-
-Integration testing can also be done using Jest.
-
-### API / UI Testing
-
-My preference at the moment is to use Cypress for both API and UI testing.
-
-Please see this repo for an example: https://github.com/ashleydavis/cypress-example
 
 ## Resources
 

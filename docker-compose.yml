@@ -5,7 +5,7 @@ services:
     image: mongo
     container_name: db
     ports:
-     - "27017:27017"
+     - "4002:27017"
     restart: always
 
   db-fixture:
@@ -25,7 +25,7 @@ services:
      - ./tmp/npm:/root/.npm:z
      - ./service/src:/usr/src/app/src:z
     ports:
-     - "8080:80"
+     - "4001:80"
     environment:
      - PORT=80
      - DBHOST=mongodb://db:27017
@@ -44,7 +44,7 @@ services:
      - ./tmp/npm:/root/.npm:z
      - ./web/src:/usr/src/app/src:z
     ports:
-     - "80:80"
+     - "4000:80"
     environment:
      - PORT=80
      - NODE_ENV=development
