@@ -27,6 +27,8 @@ function startServer() {
 
 async function main() {
 
+    console.log("Starting!");
+
     const client = await mongodb.MongoClient.connect(DBHOST);
     const db = client.db("mydb");
 
