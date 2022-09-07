@@ -26,5 +26,3 @@ set -u # or set -o nounset
 
 export DIR=$1
 docker build -t $DOCKER_REGISTRY/$DIR:$VERSION --file ./$DIR/Dockerfile-prod ./$DIR
-
-# TODO: Add your code here to run and test the image.
