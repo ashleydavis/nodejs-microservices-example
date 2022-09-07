@@ -11,7 +11,7 @@ on:
     branches: 
       - main
     paths:
-      - /web
+      - 'service/**'
   workflow_dispatch:
 
 jobs:
