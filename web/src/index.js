@@ -27,8 +27,6 @@ function startServer() {
 
 async function main() {
 
-    console.log("Starting!");
-
     app.get("/", (req, res) => {
         res.send('Hello computer!\n');
     });
