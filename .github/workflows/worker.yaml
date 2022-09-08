@@ -25,7 +25,6 @@ jobs:
       DOCKER_REGISTRY: ${{ secrets.DOCKER_PUBLISH_REGISTRY }}
       DOCKER_UN: ${{ secrets.DOCKER_PUBLISH_UN }}
       DOCKER_PW: ${{ secrets.DOCKER_PUBLISH_PW  }}
-      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
     
     steps:
       
@@ -48,9 +47,13 @@ jobs:
 
       #
       # Install Kubectl and connect.
-      # https://github.com/actions-hub/kubectl
       #
-      - uses: actions-hub/kubectl@master
+      # https://github.com/marketplace/actions/kubernetes-cli-kubectl
+      #
+      - uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+          kubectl-version: v1.24.2
 
       - name: Deploy
         run: npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -
