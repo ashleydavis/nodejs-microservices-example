@@ -55,8 +55,5 @@ jobs:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           kubectl-version: v1.24.2
       
-      - name: Kubectl test
-        run: kubectl get po
-
       - name: Deploy
         run: npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
