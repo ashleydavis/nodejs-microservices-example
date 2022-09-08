@@ -1,0 +1,34 @@
+# 
+# GitHub Actions workflow.
+#
+# Deploys the MongoDB database.
+#
+
+name: Deploy MongoDB
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      
+      # Checks-out your repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v2
+
+      #
+      # Install Kubectl and connect.
+      #
+      # https://github.com/marketplace/actions/kubernetes-cli-kubectl
+      #
+      - uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+          kubectl-version: v1.24.2
+
+      - name: Deploy
+        run: kubectl apply -f ./scripts/kubernetes/db.yaml
