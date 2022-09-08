@@ -1,0 +1,51 @@
+#
+# Deploys the worker microservice to Kubernetes.
+#
+# To deploy:
+#
+#
+# To deploy:
+#
+# export DOCKER_REGISTRY=<your-container-registry>
+# export VERSION=<the-version-to-deploy>
+# npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -
+#
+# Note:
+#
+# Figit is used to inject environment variables into the Kubernetes Yaml configuration file.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers: 
+      - name: worker
+        image: {{DOCKER_REGISTRY}}/worker:{{VERSION}}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PORT
+          value: "4000"
+        - name: DBHOST
+          value: mongodb://db.default.svc.cluster.local:27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+spec:
+  selector:
+    app: worker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4000

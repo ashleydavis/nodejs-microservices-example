@@ -1,16 +1,4 @@
 TODO.txt
-.vagrant/
-ubuntu-xenial-16.04-cloudimg-console.log
 tmp/
-service/node_modules/
-web/node_modules/
-scripts/infrastructure/.terraform/
-scripts/infrastructure/kubernetes/.terraform/
-scripts/infrastructure/docker/.terraform/
-scripts/infrastructure/kubernetes/terraform.tfstate.backup
-scripts/infrastructure/kubernetes/terraform.tfstate
-scripts/infrastructure/docker/terraform.tfstate.backup
-scripts/infrastructure/docker/terraform.tfstate
-scripts/setup-env-var-secrets.sh
-scripts/infrastructure/docker/.terraform.tfstate.lock.info
+node_modules/
 *.bak

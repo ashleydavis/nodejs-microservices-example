@@ -2,7 +2,7 @@ version: '3'
 services:
 
   db:
-    image: mongo
+    image: mongo:5.0.12
     container_name: db
     ports:
      - "4002:27017"
@@ -15,15 +15,15 @@ services:
     depends_on:
       - db
     
-  service:
-    image: service
+  worker:
+    image: worker
     build: 
-      context: ./service
+      context: ./worker
       dockerfile: Dockerfile-dev
-    container_name: service
+    container_name: worker
     volumes:
      - ./tmp/npm:/root/.npm:z
-     - ./service/src:/usr/src/app/src:z
+     - ./worker/src:/usr/src/app/src:z
     ports:
      - "4001:80"
     environment:
@@ -34,21 +34,21 @@ services:
      - db
     restart: always
 
-  web:
-    image: web
+  gateway:
+    image: gateway
     build: 
-      context: ./web
+      context: ./gateway
       dockerfile: Dockerfile-dev
-    container_name: web
+    container_name: gateway
     volumes:
      - ./tmp/npm:/root/.npm:z
-     - ./web/src:/usr/src/app/src:z
+     - ./gateway/src:/usr/src/app/src:z
     ports:
      - "4000:80"
     environment:
      - PORT=80
      - NODE_ENV=development
     depends_on:
-     - service
+     - worker
     restart: always
 

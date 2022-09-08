@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-microservices-example",
+  "version": "1.0.0",
+  "description": "Example of Node.js microservices setup using Docker, Docker-Compose and Kubernetes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashleydavis/nodejs-microservices-example.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashleydavis/nodejs-microservices-example/issues"
+  },
+  "homepage": "https://github.com/ashleydavis/nodejs-microservices-example#readme",
+  "devDependencies": {
+    "figit": "0.0.8"
+  }
+}

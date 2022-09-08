@@ -1,0 +1,57 @@
+# 
+# GitHub Actions workflow.
+#
+# Automatically publishes the "worker" microservice on push.
+#
+
+name: Publish Worker
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'worker/**'
+  workflow_dispatch:
+
+jobs:
+
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    env:
+      VERSION: ${{ github.sha }}
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_PUBLISH_REGISTRY }}
+      DOCKER_UN: ${{ secrets.DOCKER_PUBLISH_UN }}
+      DOCKER_PW: ${{ secrets.DOCKER_PUBLISH_PW  }}
+    
+    steps:
+      
+      # Checks-out your repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: ./scripts/build-image.sh worker
+
+      - name: Publish
+        run: ./scripts/push-image.sh worker
+
+      # Installs Node.js (for figit).
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      #
+      # Install Kubectl and connect.
+      # https://github.com/actions-hub/kubectl
+      #
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy
+        run: npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -

@@ -1,0 +1,38 @@
+#
+# Deploys a MongoDB database to Kubernetes.
+#
+# To deploy:
+#
+# kubectl apply -f scripts/kubernetes/db.yaml
+#
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers: 
+      - name: db
+        image: mongo:5.0.12
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
