@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/ashleydavis/nodejs-microservices-example`#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.2",
     "express": "^4.16.4"
   },
   "devDependencies": {
