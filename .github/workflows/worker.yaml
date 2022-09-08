@@ -25,6 +25,7 @@ jobs:
       DOCKER_REGISTRY: ${{ secrets.DOCKER_PUBLISH_REGISTRY }}
       DOCKER_UN: ${{ secrets.DOCKER_PUBLISH_UN }}
       DOCKER_PW: ${{ secrets.DOCKER_PUBLISH_PW  }}
+      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
     
     steps:
       
@@ -50,8 +51,6 @@ jobs:
       # https://github.com/actions-hub/kubectl
       #
       - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
       - name: Deploy
         run: npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -
