@@ -54,5 +54,8 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
       
+      - name: Kubectl test
+        run: kubectl get po
+
       - name: Deploy
         run: npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
