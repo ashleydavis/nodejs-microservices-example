@@ -1,43 +1,73 @@
 # nodejs-microservices-example
 
-Example of Node.js microservices setup using Docker, Docker-Compose, Kubernetes and Terraform.
+Example of a monorepo with multiple Node.js microservices (using Docker, Docker-Compose and Kubernetes) that have separate CI/CD pipelines. 
 
-[Click here to support my work](https://www.codecapers.com.au/about#support-my-work)
+This allows the convenience of a monorepo but with the flexibility of independent deployment schedules that makes microservices so good.
 
-Need to build a microservices application? Learn how to do this with [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
+Learn about building with microservices with my book [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
 
-Need to do exploratory coding, data analysis and visualization in JavaScript/TypeScript? [Check out Data-Forge Notebook](http://www.data-forge-notebook.com/)
+[Support my work](https://www.codecapers.com.au/about#support-my-work)
 
-Based on some of my previous examples:
-
-- https://github.com/ashleydavis/docker-compose-nodejs-example
-- https://github.com/ashleydavis/docker-compose-nodejs-with-typescript-example
-- https://github.com/ashleydavis/nodejs-docker-build-for-bitbucket-pipelines
-- https://github.com/ashleydavis/terraform-azure-example-for-bitbucket-pipelines
-
-## Requirements
+# Requirements
 
 - You should have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
-- To provision on Azure create a service principle for authentication: [https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html](https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html).
-- You need an Azure storage account and container to store Terraform state: [https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state](https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks#set-up-azure-storage-to-store-terraform-state)
+- To deploy you'll need to create a container registry and Kubernetes cluster.
+  - I recomend using Digital Ocean or Azure, because they make Kubernetes easy or Digital Ocean because it makes Kubernes cheap.
+
+# Project layout
 
 
-## Important files
+```
+nodejs-microservices-example
+│   docker-compose.yml      -> Docker Compose file for development & testing.
+│   package-lock.json
+│   package.json
+│   README.md
+│
+├───.github
+│   └───workflows
+│           db.yaml         -> Deploys the Database, this workflow is manually invoked from GitHub Actions.
+│           gateway.yaml    -> CD pipeline for the gateway microservice.
+│           worker.yaml     -> CD pipelne for an example worker microservice.
+│
+├───db-fixture              -> Loads database fixtures into the database.
+│
+├───gateway                 -> Code and Docker files for the gateway microservice.
+│   │   Dockerfile-dev
+│   │   Dockerfile-prod
+│   │   nodemon.json
+│   │   package-lock.json
+│   │   package.json
+│   │   README.MD
+│   │
+│   └───src
+│           index.js
+│
+├───scripts                 -> Deployment helper scripts.
+│   │   build-image.sh      -> Builds a Docker image.
+│   │   push-image.sh       -> Publishes a Docker image.
+│   │
+│   └───kubernetes          -> Kubernetes configuration files.
+│           db.yaml         -> Database configuration.
+│           gateway.yaml    -> Gateway microservice configuration.
+│           worker.yaml     -> Worker microservice configuration.
+│
+└───worker                  -> Code and Docker files for the example worker microservice.
+    │   .dockerignore
+    │   Dockerfile-dev
+    │   Dockerfile-prod
+    │   nodemon.json
+    │   package-lock.json
+    │   package.json
+    │   README.MD
+    │
+    └───src
+            index.js
+```
 
-- bitbucket-pipelines.yml -> Script that builds this system in the cloud on push to a Bitbucket repo.
-- docker-compose.yml -> Script that boots the whole system locally for development and testing.
-- db-fixture/           -> Docker container configure to load a database fixture into the MongoDB database.
-- scripts/              -> Scripts for building and provisioning the system.
-    - infrastructure/   -> Terraform scripts to build the cloud infrastructure.
-        - docker/       -> Terraform scripts to build a private Docker registry.
-        - kubernetes/   -> Terraform scripts to build a Kubernetes cluster to host our Docker containers.
-    - build.sh          -> Master build script. Runs all other scripts in this directory in sequence. Can build this system in the cloud from scratch.
-- service/              -> An example microservice.
-- web/                  -> Example microservice with a front-end.
+# Starting the application for development
 
-## Starting the microservices application
-
-Follow the steps in this section to book the microservices application for developent using Docker.
+Follow the steps in this section to start the microservices application for developent using Docker.
 
 Change directory to the microservices application:
 
@@ -46,12 +76,6 @@ cd nodejs-microservices-example
 ```
 
 Use Docker Compose to start the microservies application:
-
-```bash
-docker compose up
-```
-
-To build after you change code:
 
 ```bash
 docker compose up --build
@@ -69,48 +93,23 @@ The Mongodb database is available:
 
     mongodb://127.0.0.1:4002
 
-In the dev environment updates to the code on the host OS automatically flow through to the microservices in the Docker containers which are rebooted automatically using nodemon. This means you can edit code without having to restart Docker Compose.
 
-## Starting the application in production
+This development environment is configured for [live reload](https://www.codecapers.com.au/live-reload-across-the-stack/) across microservices. Any changes you make to the code for the microservices in this code repository will cause those microservices to automatically reload themselves.
 
-### Provision the cloud system using Terraform
+# Deploy the application to Kubernetes
 
-Please have Terraform and Azure CLI installed.
+At this point you need a Kubernetes cluster! For help creating one please see my book, [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
 
-### Environment variables for provisioning (Azure)
+## Set environment variables
 
-Environment variables must be set before running these scripts.
+These environment variables must be set before running these scripts:
 
-To push images to your private Docker register set these variables:
-- DOCKER_REGISTRY -> The hostname for your Docker registry.
-- DOCKER_UN -> Username for your Docker registry.
-- DOCKER_PW -> Password for your Docker registry.
-- VERSION -> The version of the software you are releasing, used to tag the Docker image..
+- DOCKER_REGISTRY -> The hostname for your container registry.
+- DOCKER_UN -> Username for your container registry.
+- DOCKER_PW -> Password for your container registry.
+- VERSION -> The version of the software you are releasing, used to tag the Docker image.
 
-To provision this application in the cloud you need to set the following environment variables to authenticate with Azure:
-
-- ARM_SUBSCRIPTION_ID
-- ARM_CLIENT_ID
-- ARM_CLIENT_SECRET 
-- ARM_TENANT_ID
-
-Another simpler way to authenticate is to use the following command (although this is manual and so won't work for continous delivery):
-
-```bash
-az login
-```
-
-For more details on these environment variables please see [the Terraform docs for the Azure provider]  (https://www.terraform.io/docs/providers/azurerm/index.html#argument-reference).
-
-For storing Terraform state in Azure storage set these environment variables:
-- TF_BACKEND_RES_GROUP
-- TF_BACKEND_STORAGE_ACC
-- TF_BACKEND_CONTAINER
-
-For storing and Terraform state and to select the Kubernetes cluster for deployment, set the following environment variable:
-- ENVIRONMENT -> Set this to 'test' or 'production'.
-
-#### Run scripts to build, provision and deploy
+## Build, publish and deploy
 
 Before running each script, please ensure it is flagged as executable, eg:
 
@@ -118,62 +117,74 @@ Before running each script, please ensure it is flagged as executable, eg:
 chmod +x ./scripts/build-image.sh
 ```
 
-The first time you do a build you need a Docker registry to push images to, run the follow script to provision your private Docker registry:
+Build Docker images:
 
 ```bash
-./scripts/provision-docker-registry.sh
+./scripts/build-image.sh worker
+./scripts/build-image.sh gateway
 ```
 
-Please take note of the username and password that are printed out after the Docker registry is created. You'll need to set these as environment variables as described in the previous section to be able to push your images to the registry.
-
-Build the Docker image:
+Publish Docker images to your container registry:
 
 ```bash
-./scripts/build-image.sh service
-./scripts/build-image.sh web
+./scripts/push-image.sh worker
+./scripts/push-image.sh gateway
 ```
 
-Push the Docker image to your container registry:
+To deploy to Kubernetes you need Kubectl configured to connect to your cluster (again, for help see [my book](http://bit.ly/2o0aDsP)).
+
+To deploy the MongoDB database:
 
 ```bash
-./scripts/push-image.sh service
-./scripts/push-image.sh web
+kubectl apply -f ./scripts/kubernetes/db.yaml
 ```
 
-Now provision your Kubernetes cluster:
+Install dependencies (to install [Figit](https://www.npmjs.com/package/figit/v/0.0.8)):
 
 ```bash
-./scripts/provision-kubernetes.sh
+npm install
 ```
 
-You can also run all the build scripts in go using:
+Then deploy the worker, using Figit to fill the blanks in the configuration file and piping the result to Kubectl:
 
 ```bash
-./scripts/build.sh
+npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -
 ```
 
-### Integration with Bitbucket Pipelines
+Then deploy the gateway, again using Figit and Kubectl:
 
-This repo integrates with Bitbucket Pipelines for continuous integration / delivery.
+```bash
+npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
+```
 
-If you put this repo in Bitbucket it will run the script in the file bitbucket-pipelines.yml on each push to the repository. This builds the Docker containers, copies the images to your private Docker Registry, provisions the environment on Azure and deploys the code.
+## Continuous delivery with GitHub Actions
 
-Please make sure you have created a private Docker registry already as mentioned in the previous section.
+This repo contains multiple GitHub Actions workflow configurations for automatic deployment to Kubernetes when the code for the each microservice changes.
 
-Please see the earlier section that lists [the environment variables you must set in Bitbucket](https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html)
+Note that these CD pipelines are configured to be independent. When you push code changes for the gateway microservice, only that microservice will be built and deployed. Likewise, when you push code for the worker microservice, only that microservice will be deployed.
 
-Although please don't set the VERSION environment variable for Bitbucket, that's already set to the build number from Bitbucket Pipelines.
+This allows us to have multiple microservices in a monorepo, but with the flexibility of separate deployment pipelines.
 
-## Resources
+### Environment varibles
 
-Setting up Terraform for Azure
-https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-install-configure
+To get the deployment pipelines working for your own code repository you will need to configure some environent variables as GitHub Secrets for your repository on GitHub.
 
-Creating a service principle:
-https://www.terraform.io/docs/providers/azurerm/authenticating_via_service_principal.html
+Add the environment variables specified above: DOCKER_REGISTRY, DOCKER_UN nad DOCKER_PW.
 
-https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
-https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
+You will also need to add your Kubernetes configuration (encoded as base64) to a GitHub Secret called KUBE_CONFIG. 
 
-Great video from Scott Hanselman
-https://www.youtube.com/watch?v=iECZMWIQfgc
+You can encode your local configuration like this:
+
+```bash
+cat ~/.kube/config | base64
+```
+
+Cut and paste the result into the KUBE_CONFIG secret.
+
+If you are working with Azure you can download and encode config using [the Azure CLI tool](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli):
+
+```bash
+az aks get-credentials --resource-group <resource-group> --name <cluster-name> -f - | base64
+```
+
+Cut and paste the result into the KUBE_CONFIG secret.
