@@ -46,7 +46,7 @@ jobs:
         run: npm install
 
       #
-      # Install Kubectl and connect.
+      # Install Kubectl and connect to the cluster.
       #
       # https://github.com/marketplace/actions/kubernetes-cli-kubectl
       #
