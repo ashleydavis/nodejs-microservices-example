@@ -85,8 +85,9 @@ A web page is now available:
 
     http://127.0.0.1:4000
 
-An example REST API is also available:
+An example REST APIs are available:
 
+    http://127.0.0.1:4000/api/data
     http://127.0.0.1:4001/api/data
 
 The Mongodb database is available:
