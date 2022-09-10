@@ -28,18 +28,10 @@ async function main() {
 
     const app = express();
 
-    app.get("/api/data", (req, res) => {
+    app.get("/api/data", async (req, res) => {
         const collection = db.collection("mycollection");
-        collection.find().toArray()
-            .then(data => {
-                res.json(data);
-            })
-            .catch(err => {
-                console.error("Error retreiving data.");
-                console.error(err && err.stack || err);
-
-                res.sendStatus(500);
-            });
+        const documents = await collection.find().toArray();
+        res.json(documents);
     });
 
     await startServer(app);

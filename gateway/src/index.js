@@ -29,16 +29,9 @@ async function main() {
         res.send('Hello computer!\n');
     });
 
-    app.get("/api/data", (req, res) => {
-        axios.get(SERVICE_URL + "/api/data")
-            .then(response => {
-                res.json(response.data);
-            })
-            .catch(err => {
-                console.error("Error forwarding request:");
-                console.error(err && err.stack || err);
-                res.sendStatus(500);
-            });
+    app.get("/api/data", async (req, res) => {
+        const response = await axios.get(SERVICE_URL + "/api/data")
+        res.json(response.data);
     });
 
     await startServer(app);
