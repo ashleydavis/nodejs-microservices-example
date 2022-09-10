@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const PORT = process.env.PORT || 80;
 const HOST = process.env.HOST || "0.0.0.0";
-const SERVICE_URL = process.env.SERVICE_URL || "http://service"; 
+const SERVICE_URL = process.env.SERVICE_URL || "http://worker"; 
 
 function startServer(app) {
     return new Promise((resolve, reject) => {
