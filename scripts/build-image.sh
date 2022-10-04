@@ -21,8 +21,8 @@
 
 set -u # or set -o nounset
 : "$1"
-: "$DOCKER_REGISTRY"
+: "$CONTAINER_REGISTRY"
 : "$VERSION"
 
 export DIR=$1
-docker build -t $DOCKER_REGISTRY/$DIR:$VERSION --file ./$DIR/Dockerfile-prod ./$DIR
+docker build -t $CONTAINER_REGISTRY/$DIR:$VERSION --file ./$DIR/Dockerfile-prod ./$DIR

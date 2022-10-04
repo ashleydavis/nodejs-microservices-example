@@ -3,7 +3,7 @@
 #
 # To deploy:
 #
-# export DOCKER_REGISTRY=<your-container-registry>
+# export CONTAINER_REGISTRY=<your-container-registry>
 # export VERSION=<the-version-to-deploy>
 # npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
 #
@@ -27,7 +27,7 @@ spec:
     spec:
       containers: 
       - name: gateway
-        image: {{DOCKER_REGISTRY}}/gateway:{{VERSION}}
+        image: {{CONTAINER_REGISTRY}}/gateway:{{VERSION}}
         imagePullPolicy: IfNotPresent
         env:
         - name: PORT

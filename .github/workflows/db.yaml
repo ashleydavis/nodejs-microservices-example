@@ -30,5 +30,8 @@ jobs:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           kubectl-version: v1.24.2
 
+      #
+      # Deploys the MongoDB database to Kubernetes.
+      #
       - name: Deploy
         run: kubectl apply -f ./scripts/kubernetes/db.yaml

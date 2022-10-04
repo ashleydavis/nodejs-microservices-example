@@ -6,7 +6,7 @@
 #
 # To deploy:
 #
-# export DOCKER_REGISTRY=<your-container-registry>
+# export CONTAINER_REGISTRY=<your-container-registry>
 # export VERSION=<the-version-to-deploy>
 # npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -
 #
@@ -30,7 +30,7 @@ spec:
     spec:
       containers: 
       - name: worker
-        image: {{DOCKER_REGISTRY}}/worker:{{VERSION}}
+        image: {{CONTAINER_REGISTRY}}/worker:{{VERSION}}
         imagePullPolicy: IfNotPresent
         env:
         - name: PORT

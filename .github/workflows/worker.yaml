@@ -22,26 +22,37 @@ jobs:
     
     env:
       VERSION: ${{ github.sha }}
-      DOCKER_REGISTRY: ${{ secrets.DOCKER_PUBLISH_REGISTRY }}
-      DOCKER_UN: ${{ secrets.DOCKER_PUBLISH_UN }}
-      DOCKER_PW: ${{ secrets.DOCKER_PUBLISH_PW  }}
+      CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+      REGISTRY_UN: ${{ secrets.REGISTRY_UN }}
+      REGISTRY_PW: ${{ secrets.REGISTRY_PW  }}
     
     steps:
       
       # Checks-out your repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v2
 
+      #
+      # Builds the Docker image.
+      #
       - name: Build
         run: ./scripts/build-image.sh worker
 
+      #
+      # Publishes the Docker image to the container registry.
+      #
       - name: Publish
         run: ./scripts/push-image.sh worker
 
+      #
       # Installs Node.js (for figit).
+      #
       - uses: actions/setup-node@v1
         with:
           node-version: 18
 
+      #
+      # Installs Figit.
+      #
       - name: Install dependencies
         run: npm install
 
@@ -55,5 +66,8 @@ jobs:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           kubectl-version: v1.24.2
 
+      #
+      # Expands the configuration template and deploys the microservice.
+      #
       - name: Deploy
         run: npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl apply -f -

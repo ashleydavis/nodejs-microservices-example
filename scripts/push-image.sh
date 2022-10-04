@@ -23,11 +23,11 @@
 
 set -u # or set -o nounset
 : "$1"
-: "$DOCKER_REGISTRY"
+: "$CONTAINER_REGISTRY"
 : "$VERSION"
-: "$DOCKER_UN"
-: "$DOCKER_PW"
+: "$REGISTRY_UN"
+: "$REGISTRY_PW"
 
 export DIR=$1
-echo $DOCKER_PW | docker login $DOCKER_REGISTRY --username $DOCKER_UN --password-stdin
-docker push $DOCKER_REGISTRY/$DIR:$VERSION
+echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --password-stdin
+docker push $CONTAINER_REGISTRY/$DIR:$VERSION
