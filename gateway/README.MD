@@ -1,1 +1,5 @@
-This directory contains a simple Node.js web server.
+# gateway
+
+This directory contains the gateway microservice, a simple example with a web server and a REST API.
+
+The REST API is forwarded to the worker microservice.

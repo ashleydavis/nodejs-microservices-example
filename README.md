@@ -11,11 +11,10 @@ Learn about building with microservices with my book [Bootstrapping Microservice
 # Requirements
 
 - You should have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
-- To deploy you'll need to create a container registry and Kubernetes cluster.
-  - I recomend using Digital Ocean or Azure, because they make Kubernetes easy or Digital Ocean because it makes Kubernes cheap.
+- To deploy you'll need [to create a container registry and Kubernetes cluster](https://www.codecapers.com.au/kub-cluster-quick-2/).
+  - I recomend using Digital Ocean or Azure, because they make Kubernetes easy or Digital Ocean because it makes Kubernetes cheap.
 
 # Project layout
-
 
 ```
 nodejs-microservices-example
@@ -28,7 +27,7 @@ nodejs-microservices-example
 │   └───workflows
 │           db.yaml         -> Deploys the Database, this workflow is manually invoked from GitHub Actions.
 │           gateway.yaml    -> CD pipeline for the gateway microservice.
-│           worker.yaml     -> CD pipelne for an example worker microservice.
+│           worker.yaml     -> CD pipeline for an example worker microservice.
 │
 ├───db-fixture              -> Loads database fixtures into the database.
 │
@@ -44,15 +43,15 @@ nodejs-microservices-example
 │           index.js
 │
 ├───scripts                 -> Deployment helper scripts.
-│   │   build-image.sh      -> Builds a Docker image.
-│   │   push-image.sh       -> Publishes a Docker image.
+│   │   build-image.sh        -> Builds a Docker image.
+│   │   push-image.sh         -> Publishes a Docker image.
 │   │
 │   └───kubernetes          -> Kubernetes configuration files.
-│           db.yaml         -> Database configuration.
-│           gateway.yaml    -> Gateway microservice configuration.
-│           worker.yaml     -> Worker microservice configuration.
+│           db.yaml           -> Database configuration.
+│           gateway.yaml      -> Gateway microservice configuration.
+│           worker.yaml       -> Worker microservice configuration.
 │
-└───worker                  -> Code and Docker files for the example worker microservice.
+└───worker                  -> Code and Docker files for the worker microservice.
     │   .dockerignore
     │   Dockerfile-dev
     │   Dockerfile-prod
@@ -105,9 +104,9 @@ At this point you need a Kubernetes cluster! For help creating one please see my
 
 These environment variables must be set before running these scripts:
 
-- DOCKER_REGISTRY -> The hostname for your container registry.
-- DOCKER_UN -> Username for your container registry.
-- DOCKER_PW -> Password for your container registry.
+- CONTAINER_REGISTRY -> The hostname for your container registry.
+- REGISTRY_UN -> Username for your container registry.
+- REGISTRY_PW -> Password for your container registry.
 - VERSION -> The version of the software you are releasing, used to tag the Docker image.
 
 ## Build, publish and deploy
@@ -132,7 +131,7 @@ Publish Docker images to your container registry:
 ./scripts/push-image.sh gateway
 ```
 
-To deploy to Kubernetes you need Kubectl configured to connect to your cluster (again, for help see [my book](http://bit.ly/2o0aDsP)).
+To deploy to Kubernetes you need [Kubectl configured to connect to your cluster](https://www.codecapers.com.au/kub-cluster-quick-2/).
 
 To deploy the MongoDB database:
 
@@ -160,17 +159,17 @@ npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
 
 ## Continuous delivery with GitHub Actions
 
-This repo contains multiple GitHub Actions workflow configurations for automatic deployment to Kubernetes when the code for the each microservice changes.
+This repo contains multiple GitHub Actions workflow configurations for automatic deployment to Kubernetes when the code for the each microservice changes (you can also manually invoke the workflows to trigger deployment even when the code hasn't changed).
 
 Note that these CD pipelines are configured to be independent. When you push code changes for the gateway microservice, only that microservice will be built and deployed. Likewise, when you push code for the worker microservice, only that microservice will be deployed.
 
 This allows us to have multiple microservices in a monorepo, but with the flexibility of separate deployment pipelines.
 
-### Environment varibles
+### Environment variables
 
 To get the deployment pipelines working for your own code repository you will need to configure some environent variables as GitHub Secrets for your repository on GitHub.
 
-Add the environment variables specified above: DOCKER_REGISTRY, DOCKER_UN nad DOCKER_PW.
+Add the environment variables specified above: CONTAINER_REGISTRY, REGISTRY_UN nad REGISTRY_PW.
 
 You will also need to add your Kubernetes configuration (encoded as base64) to a GitHub Secret called KUBE_CONFIG. 
 
