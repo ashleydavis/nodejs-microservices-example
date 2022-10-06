@@ -1,11 +1,11 @@
 #
-# Build a Docker image.
+# Publishes a Docker image.
 #
 # Environment variables:
 #
-#   DOCKER_REGISTRY - The hostname of your private Docker registry.
-#   DOCKER_UN - User name for your Docker registry.
-#   DOCKER_PW - Password for your Docker registry.
+#   CONTAINER_REGISTRY - The hostname of your container registry.
+#   REGISTRY_UN - User name for your container registry.
+#   REGISTRY_PW - Password for your container registry.
 #   VERSION - The version number to tag the images with.
 #
 # Parameters:
