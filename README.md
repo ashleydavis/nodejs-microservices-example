@@ -8,12 +8,6 @@ Learn about building with microservices with my book [Bootstrapping Microservice
 
 [Support my work](https://www.codecapers.com.au/about#support-my-work)
 
-# Requirements
-
-- You should have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
-- To deploy you'll need [to create a container registry and Kubernetes cluster](https://www.codecapers.com.au/kub-cluster-quick-2/).
-  - I recomend using Digital Ocean or Azure, because they make Kubernetes easy or Digital Ocean because it makes Kubernetes cheap.
-
 # Project layout
 
 ```
@@ -64,6 +58,18 @@ nodejs-microservices-example
             index.js
 ```
 
+# Setup
+
+- You should have [Docker Desktop](https://www.docker.com/products/docker-desktop) installed.
+- To deploy you'll need [to create a container registry and Kubernetes cluster](https://www.codecapers.com.au/kub-cluster-quick-2/).
+  - I recomend using Digital Ocean or Azure, because they make Kubernetes easy or Digital Ocean because it makes Kubernetes cheap.
+  
+Clone the example repo:
+
+```bash
+git clone https://github.com/ashleydavis/nodejs-microservices-example.git
+```
+
 # Starting the application for development
 
 Follow the steps in this section to start the microservices application for developent using Docker.
@@ -92,7 +98,6 @@ An example REST APIs are available:
 The Mongodb database is available:
 
     mongodb://127.0.0.1:4002
-
 
 This development environment is configured for [live reload](https://www.codecapers.com.au/live-reload-across-the-stack/) across microservices. Any changes you make to the code for the microservices in this code repository will cause those microservices to automatically reload themselves.
 
@@ -139,7 +144,9 @@ To deploy the MongoDB database:
 kubectl apply -f ./scripts/kubernetes/db.yaml
 ```
 
-Install dependencies (to install [Figit](https://www.npmjs.com/package/figit/v/0.0.8)):
+For the next bit you need Node.js isntalled so that you can use [Figit](https://www.npmjs.com/package/figit) to expand the templated Kubenetes configuration files.
+
+Install dependencies (thus installling Figit):
 
 ```bash
 npm install
@@ -155,6 +162,47 @@ Then deploy the gateway, again using Figit and Kubectl:
 
 ```bash
 npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl apply -f -
+```
+
+## Check your deployment 
+
+Check the status of pods and deployments:
+
+```bash
+kubectl get pods
+kubectl get deployments
+```
+
+To find the IP address allocated to the web server, invoke:
+
+```bash
+kubectl get services
+```
+
+Pull out the EXTERNAL-IP address for the gateway service and put that into your web browser. You should see the hello world message in the browser.
+
+To check console logging for the Node.js app:
+
+```bash
+kubectl logs <pod-name>
+```
+
+Be sure the actual name of the pod for `<pod-name>` that was in the output from `kubectl get pods`.
+
+## Destroy the deployments
+
+To destroy all the deployments when you are done:
+
+```bash
+kubectl delete -f ./scripts/kubernetes/db.yaml
+```
+
+```bash
+npx figit ./scripts/kubernetes/worker.yaml --output yaml | kubectl delete -f -
+```
+
+```bash
+npx figit ./scripts/kubernetes/gateway.yaml --output yaml | kubectl delete -f -
 ```
 
 ## Continuous delivery with GitHub Actions
