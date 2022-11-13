@@ -4,6 +4,8 @@ Example of a monorepo with multiple Node.js microservices (using Docker, Docker-
 
 This allows the convenience of a monorepo but with the flexibility of independent deployment schedules that makes microservices so good.
 
+This code repo accompanies my blog post on [creating separate CI/CD pipelines in a monorepo](https://www.codecapers.com.au/separate-cd-pipelines-for-microservices-in-a-monorepo/).
+
 Learn about building with microservices with my book [Bootstrapping Microservices](http://bit.ly/2o0aDsP).
 
 [Support my work](https://www.codecapers.com.au/about#support-my-work)
